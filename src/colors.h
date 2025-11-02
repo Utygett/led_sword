@@ -1,0 +1,42 @@
+#pragma once
+
+// Определения цветов в формате 0xRRGGBB
+#define COLOR_BLACK     0x000000
+#define COLOR_WHITE     0xFFFFFF
+#define COLOR_RED       0xFF0000
+#define COLOR_LIME      0x00FF00
+#define COLOR_BLUE      0x0000FF
+#define COLOR_YELLOW    0xFFFF00
+#define COLOR_CYAN      0x00FFFF
+#define COLOR_MAGENTA   0xFF00FF
+#define COLOR_SILVER    0xC0C0C0
+#define COLOR_GRAY      0x808080
+#define COLOR_MAROON    0x800000
+#define COLOR_OLIVE     0x808000
+#define COLOR_GREEN     0x008000
+#define COLOR_PURPLE    0x800080
+#define COLOR_TEAL      0x008080
+#define COLOR_NAVY      0x000080
+#define COLOR_ORANGE    0xFFA500
+#define COLOR_PINK      0xFFC0CB
+#define COLOR_VIOLET    0xEE82EE
+#define COLOR_BROWN     0xA52A2A
+#define COLOR_GOLD      0xFFD700
+#define COLOR_CORAL     0xFF7F50
+#define COLOR_SALMON    0xFA8072
+#define COLOR_TURQUOISE 0x40E0D0
+#define COLOR_SKYBLUE   0x87CEEB
+#define COLOR_LAVENDER  0xE6E6FA
+#define COLOR_CRIMSON   0xDC143C
+#define COLOR_INDIGO    0x4B0082
+#define COLOR_BEIGE     0xF5F5DC
+#define COLOR_MINT      0xF5FFFA
+#define COLOR_AZURE     0xF0FFFF
+#define COLOR_IVORY     0xFFFFF0
+#define COLOR_KHAKI     0xF0E68C
+#define COLOR_SNOW      0xFFFAFA
+#define COLOR_TOMATO    0xFF6347
+#define COLOR_PLUM      0xDDA0DD
+#define COLOR_PEACH     0xFFDAB9
+#define COLOR_SIENNA    0xA0522D
+#define COLOR_CHARTREUSE 0x7FFF00

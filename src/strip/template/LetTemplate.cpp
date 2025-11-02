@@ -1,18 +1,6 @@
 #include "LetTemplate.h"
 
 LedTemplate::LedTemplate() {}
-//Инициализируем шаблон значениями которые не будут передаваться на меч
-void LedTemplate::init() {
-    for(int i = 0; i < MAIN_STRIP_COUNT; ++i) {
-        m_stripColors.main_colors[i] = INT32_MAX;
-    }
-    for(int i = 0; i < UPPER_STRIP_COUNT; ++i) {
-        m_stripColors.upper_colors[i] = INT32_MAX;
-    }
-    for(int i = 0; i < DOWN_STRIP_COUNT; ++i) {
-        m_stripColors.down_colors[i] = INT32_MAX;
-    }
-}
 
 int getRightLedByIndex(int index) {
   if (index == 0)
@@ -25,17 +13,17 @@ int getLeftLedByIndex(int index) {
 }
 
 //Задать цвет на левой стороне по номеру линии
-void LedTemplate::SetColorOnLeftPixel(int line, uint32_t color) {
-    m_stripColors.main_colors[getLeftLedByIndex(line)] = color;
+void LedTemplate::SetColorOnLeftPixel(StripColors &stripColors, int line, uint32_t color) {
+    stripColors.main_colors[getLeftLedByIndex(line)] = color;
   
 }
 //Задать цвет на правой стороне по номеру линии
-void LedTemplate::SetColorOnRightPixel(int line, uint32_t color) {
-    m_stripColors.main_colors[getRightLedByIndex(line)] = color;
+void LedTemplate::SetColorOnRightPixel(StripColors &stripColors, int line, uint32_t color) {
+    stripColors.main_colors[getRightLedByIndex(line)] = color;
 }
 //Задаём цвет на линии
-void LedTemplate::SetColorByLine(int line, uint32_t color)
+void LedTemplate::SetColorByLine(StripColors &stripColors, int line, uint32_t color)
 {
-    SetColorOnLeftPixel(line, color);
-    SetColorOnRightPixel(line, color);
+    SetColorOnLeftPixel(stripColors, line, color);
+    SetColorOnRightPixel(stripColors, line, color);
 }

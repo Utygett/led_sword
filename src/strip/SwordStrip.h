@@ -15,7 +15,6 @@ private:
     NeoPixelStrip m_upperStrip;
     NeoPixelStrip m_downStrip;
     NeoPixelStrip m_mainStrip;
-    StripColors m_stripColors;
 public:
     SwordStrip();
     //Очистить все цвета на лентах
@@ -27,6 +26,8 @@ public:
     //Тестирование всех светодиадов
     void testLeds();
     //Инициализация
-    void begin();
-    
+    void begin();\
+    //Устанавливаем яркость
+    void setBrightness(int val);
+    uint32_t color(uint8_t r, uint8_t g, uint8_t b) { return m_mainStrip.Color(r,g,b);};
 };
