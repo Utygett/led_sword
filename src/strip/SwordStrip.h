@@ -1,4 +1,4 @@
-// NeoPixelStrip.h
+// StripColors.h
 #pragma once
 #include "base/NeoPixelStrip.h"
 #include "settings.h"
@@ -26,7 +26,6 @@ public:
     void SetColors(const StripColors& stripColors);
     //Тестирование всех светодиадов
     void testLeds();
-    void simpleTest();
     //Инициализация
     void begin();
     

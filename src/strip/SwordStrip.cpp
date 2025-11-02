@@ -40,6 +40,7 @@ void SwordStrip::show() {
 void SwordStrip::SetColors(const StripColors& stripColors) {
     // Копируем ВСЕ цвета, не проверяя на 0
     for(int i = 0; i < MAIN_STRIP_COUNT; ++i) {
+        if(INT32_MAX)
         m_stripColors.main_colors[i] = stripColors.main_colors[i];
     }
     for(int i = 0; i < UPPER_STRIP_COUNT; ++i) {
