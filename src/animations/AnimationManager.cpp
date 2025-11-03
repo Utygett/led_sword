@@ -1,5 +1,11 @@
 #include "AnimationManager.h"
 #include "wave/WaveUpAnimation.h"
+#include "wave/WaveDawn.h"
+#include "round/FullRound.h"
+#include "wave/WaveStarDown.h"
+#include "round/RoundStar.h"
+#include "blink/SawBlink.h"
+#include "blink/Police.h"
 
 AnimationManager::AnimationManager(SwordStrip& swordStrip): m_swordStrip(swordStrip) {
     clearFrame();
@@ -34,11 +40,42 @@ void AnimationManager::updateAnimation(AnimationState &state, unsigned long curr
         break;
     }
     case WAVE_DOWN:
-        /* code */
+    {
+        WaveDawn waveDown(state);
+        waveDown.update(m_currentFrame, currentTime);
         break;
-    case BLINK:
-        /* code */
+    }
+        
+    case FULL_ROUND:
+    {
+        FullRound fullRound(state);
+        fullRound.update(m_currentFrame, currentTime);
         break;
+    }
+    case SAW_BLINK:
+    {
+        SawBlink sawBlink(state);
+        sawBlink.update(m_currentFrame, currentTime);
+        break;
+    }
+    case WAVE_STAR_DOWN:
+    {
+        WaveStarDown starDown(state);
+        starDown.update(m_currentFrame, currentTime);
+        break;
+    }
+    case ROUND_STAR:
+    {
+        RoundStar roundStar(state);
+        roundStar.update(m_currentFrame, currentTime);
+        break;
+    }
+    case POLICE_BLINK :
+    {
+        Police police(state);
+        police.update(m_currentFrame, currentTime);
+        break;
+    }
     default:
         break;
     }
@@ -65,7 +102,7 @@ void AnimationManager::queueState() {
 }
 
 void AnimationManager::update() {
-    int currentTime = millis();
+    unsigned long currentTime = millis();
     for(int i = 0; i < MAX_ANIMATIONS; ++i)
     {
         if (m_animationStates[i].type != Animations::NO_ANIMATION) {

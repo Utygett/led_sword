@@ -14,4 +14,6 @@ public:
     void SetColorOnLeftPixel(StripColors &stripColors,int line, uint32_t color);
     //Задать цвет на правой стороне по номеру линии
     void SetColorOnRightPixel(StripColors &stripColors,int line, uint32_t color);
+    //Задать цвет по индексу на главной ленте
+    void SetColorOnMainByIndex(StripColors &stripColors,int index, uint32_t color);
 };

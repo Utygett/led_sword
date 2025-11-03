@@ -25,7 +25,7 @@ void setup() {
 
 bool bInit = false;
 int currentAnim = 0;
-int prevMilis = 0;
+unsigned long prevMilis = 0;
 
 uint32_t getColorByCounter(int counter) {
   switch(counter) {
@@ -54,23 +54,24 @@ uint32_t getColorByCounter(int counter) {
   }
 }
 
-void loop() {
-  if (!bInit)
-  {
-    bInit = true;
-    g_manager.addAnimation(WAVE_UP, 50, getColorByCounter(currentAnim));
-  }
 
-  if (currentAnim > 10)
-    currentAnim = 0;
+void loop() {
+    if (!bInit) {
+        bInit = true;
+        g_manager.addAnimation(POLICE_BLINK, 1000, getColorByCounter(currentAnim));
+    }
+
+    if(millis() - prevMilis > 10000) { // Увеличил до 2 секунд для теста
+        prevMilis = millis();
+        currentAnim++;
+        if (currentAnim > 10) {
+          currentAnim = 0;
+        } 
+        
+        // Добавляем новую анимацию только если предыдущая завершилась
+        bInit = false;
+    }
     
-  if(millis() - prevMilis > 600)
-  {
-    prevMilis = millis();
-    ++currentAnim;
-    bInit = false;
-  }
-  g_manager.update();
-  
-  // put your main code here, to run repeatedly:
+    g_manager.update();
+    delay(10);
 }

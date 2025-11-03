@@ -6,7 +6,11 @@ enum Animations {
     NO_ANIMATION,
     WAVE_UP,
     WAVE_DOWN,
-    BLINK
+    FULL_ROUND,
+    SAW_BLINK,
+    WAVE_STAR_DOWN,
+    ROUND_STAR,
+    POLICE_BLINK,
 };
 
 //Структура для хранения данных состояний 
@@ -22,7 +26,7 @@ struct AnimationState
 
 class AnimationManager {
 private:
-    static const uint8_t MAX_ANIMATIONS = 10;
+    static const uint8_t MAX_ANIMATIONS = 50;
     AnimationState m_animationStates[MAX_ANIMATIONS];
     SwordStrip& m_swordStrip;
     StripColors m_currentFrame;

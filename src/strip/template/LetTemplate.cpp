@@ -27,3 +27,7 @@ void LedTemplate::SetColorByLine(StripColors &stripColors, int line, uint32_t co
     SetColorOnLeftPixel(stripColors, line, color);
     SetColorOnRightPixel(stripColors, line, color);
 }
+
+void LedTemplate::SetColorOnMainByIndex(StripColors &stripColors,int index, uint32_t color) {
+    stripColors.main_colors[index] = color;
+}
