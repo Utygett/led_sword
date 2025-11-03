@@ -3,14 +3,22 @@
 #include "strip/SwordStrip.h"
 #include "animations/AnimationManager.h"
 #include "animations/wave/WaveUpAnimation.h"
+#include "hardware/Button.h"
+#include "hardware/TouchSensor.h"
 
 SwordStrip g_sword;  
 AnimationManager g_manager(g_sword);
+
+
+// Кнопка на пине 2, используется INPUT_PULLUP, дебаунс 50 мс
+Button menuBtn(MENU_BUTTON_PIN, true, 50);
+TouchSensor touch(VIBRATION_SENSOR_PIN, 0, false, 30, true); // digital, active LOW
+
 void setup() {
   pinMode(MENU_BUTTON_PIN, INPUT_PULLUP);
   pinMode(INCREMENT_BUTTON_PIN, INPUT_PULLUP);
   pinMode(DECREMENT_BUTTON_PIN, INPUT_PULLUP);
-  pinMode(VIBRATION_SENSOR_PIN, INPUT_PULLUP);
+  pinMode(VIBRATION_SENSOR_PIN, INPUT_PULLUP); // важен pull-up для active LOW
 
   delay(100); // Даём питанию стабилизироваться
   
@@ -21,6 +29,10 @@ void setup() {
   // Затем полный тест
   // g_sword.testLeds();
   g_sword.setBrightness(150);
+  menuBtn.begin();
+
+  // инициализация сенсора
+  touch.begin();
 }
 
 bool bInit = false;
@@ -56,22 +68,33 @@ uint32_t getColorByCounter(int counter) {
 
 
 void loop() {
-    if (!bInit) {
-        bInit = true;
-        g_manager.addAnimation(POLICE_BLINK, 1000, getColorByCounter(currentAnim));
+    unsigned long now = millis();
+    menuBtn.update(now);
+    touch.update(now);
+
+    // теперь используем justTouched() вместо прямого digitalRead(...)
+    if (touch.justTouched()) {
+        g_manager.addAnimation(ROUND_STAR, 30, getColorByCounter(currentAnim));
     }
 
-    if(millis() - prevMilis > 10000) { // Увеличил до 2 секунд для теста
-        prevMilis = millis();
-        currentAnim++;
-        if (currentAnim > 10) {
-          currentAnim = 0;
-        } 
-        
-        // Добавляем новую анимацию только если предыдущая завершилась
-        bInit = false;
+    // одноразовые события
+    if (menuBtn.justPressed()) {
+      currentAnim += 1;
+      if (currentAnim > 10)
+        currentAnim = 0;
+        // g_manager.addAnimation(ROUND_STAR, 100, getColorByCounter(currentAnim));
     }
-    
+    if (menuBtn.justReleased()) {
+        digitalWrite(LED_BUILTIN, LOW);
+    }
+
+    // текущее состояние и длительность удержания
+    // if (menuBtn.isPressed()) {
+    //     if (menuBtn.pressedDuration() > 1000)
+    //     {
+          
+    //     }
+          
+    // }
     g_manager.update();
-    delay(10);
 }
