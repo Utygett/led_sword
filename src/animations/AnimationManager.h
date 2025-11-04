@@ -28,12 +28,13 @@ class AnimationManager {
 private:
     static const uint8_t MAX_ANIMATIONS = 50;
     AnimationState m_animationStates[MAX_ANIMATIONS];
-    SwordStrip& m_swordStrip;
+    SwordStrip m_swordStrip;
     StripColors m_currentFrame;
     uint8_t m_activeCount = 0;
     
 public:
-    AnimationManager(SwordStrip& swordStrip);
+    AnimationManager();
+    void begin();                      // <-- добавлено: инициализация внутренней ленты
     bool addAnimation(Animations animation, int delay, uint32_t color);
     void updateAnimation(AnimationState &state, unsigned long currentTime);
     void update();

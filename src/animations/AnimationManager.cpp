@@ -7,8 +7,30 @@
 #include "blink/SawBlink.h"
 #include "blink/Police.h"
 
-AnimationManager::AnimationManager(SwordStrip& swordStrip): m_swordStrip(swordStrip) {
+// добавляем простой конструктор (если уже есть, оставьте)
+AnimationManager::AnimationManager() {
+    m_activeCount = 0;
     clearFrame();
+}
+
+// Инициализация внутренней ленты
+void AnimationManager::begin() {
+    // Инициализируем саму ленту
+    m_swordStrip.begin();
+    // Установим разумную яркость по умолчанию
+    m_swordStrip.setBrightness(150);
+
+    // Очистим кадр и отобразим (чёрный экран)
+    clearFrame();
+    m_swordStrip.SetColors(m_currentFrame);
+    m_swordStrip.show();
+}
+
+// Простая реализация очистки кадра (черный)
+void AnimationManager::clearFrame() {
+    for (int i = 0; i < MAIN_STRIP_COUNT; ++i) m_currentFrame.main_colors[i] = 0;
+    for (int i = 0; i < UPPER_STRIP_COUNT; ++i) m_currentFrame.upper_colors[i] = 0;
+    for (int i = 0; i < DOWN_STRIP_COUNT; ++i) m_currentFrame.down_colors[i] = 0;
 }
 
 bool AnimationManager::addAnimation(Animations animation, int delay, uint32_t color) {
@@ -115,12 +137,6 @@ void AnimationManager::update() {
     queueState();
 }
 
-
-void AnimationManager::clearFrame() {
-    for (auto& color : m_currentFrame.main_colors) color = INT32_MAX;
-    for (auto& color : m_currentFrame.upper_colors) color = INT32_MAX;
-    for (auto& color : m_currentFrame.down_colors) color = INT32_MAX;
-}
 
 void AnimationManager::blendFrames(const StripColors& newFrame) {
     // Копируем цвета, кроме не инициализированных
