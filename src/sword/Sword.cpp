@@ -1,6 +1,9 @@
 #include "Sword.h"
 
-Sword::Sword() : menuBtn(MENU_BUTTON_PIN, true, 50), touch(VIBRATION_SENSOR_PIN, 0, false, 30, true) {
+Sword::Sword() : m_menuBtn(MENU_BUTTON_PIN, true, 50),
+                 m_touch(VIBRATION_SENSOR_PIN, 0, false, 30, true),
+                 m_incBtn(INCREMENT_BUTTON_PIN, true, 50),
+                 m_decBtn(DECREMENT_BUTTON_PIN, true, 50) {
 }
 
 uint32_t make_color(uint8_t r, uint8_t g, uint8_t b) {
@@ -43,36 +46,42 @@ void Sword::begin() {
   pinMode(VIBRATION_SENSOR_PIN, INPUT_PULLUP);
 
   delay(100); // Даём питанию стабилизироваться
-
-  // Инициализация менеджера (он содержит внутренний SwordStrip)
   m_manager.begin();
 
   // Инициализация кнопок/датчика
-  menuBtn.begin();
-  touch.begin();
+  m_menuBtn.begin();
+  m_incBtn.begin();
+  m_decBtn.begin();
+  m_touch.begin();
 }
 
 int currentAnim = 0;
 
 void Sword::update() {
     unsigned long now = millis();
-    menuBtn.update(now);
-    touch.update(now);
+    updateHardware(now);
 
     // триггерим анимацию только при касании (active LOW)
-    if (touch.justTouched()) {
+    if (m_touch.justTouched()) {
         m_manager.addAnimation(ROUND_STAR, 30, getColorByCounter(currentAnim));
         currentAnim += 1;
         if (currentAnim > 10) currentAnim = 0;
     }
 
     // одноразовые события меню
-    if (menuBtn.justPressed()) {
-      
+    if (m_menuBtn.justPressed()) {
+      m_manager.addAnimation(ROUND_STAR, 30, getColorByCounter(currentAnim));
     }
-    if (menuBtn.justReleased()) {
+    if (m_menuBtn.justReleased()) {
         digitalWrite(LED_BUILTIN, LOW);
     }
 
     m_manager.update();
+}
+
+void Sword::updateHardware(unsigned long now) {
+  m_menuBtn.update(now);
+  m_touch.update(now);
+  m_incBtn.update(now);
+  m_decBtn.update(now);
 }

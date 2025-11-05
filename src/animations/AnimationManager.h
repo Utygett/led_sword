@@ -1,6 +1,14 @@
 #pragma once
 
 #include "../strip/SwordStrip.h"
+#include "colors.h"
+
+struct AnimationSettings
+{
+    uint8_t delay = 100;
+    uint32_t color = COLOR_RED;
+};
+
 
 enum Animations {
     NO_ANIMATION,
@@ -11,17 +19,18 @@ enum Animations {
     WAVE_STAR_DOWN,
     ROUND_STAR,
     POLICE_BLINK,
+    ANIMATIONS_SIZE
 };
 
 //Структура для хранения данных состояний 
 struct AnimationState
 {
     Animations type = NO_ANIMATION;           //тип анимации
-    uint8_t delay = 0;          //тип анимации
+    uint8_t delay = 0;          
     uint16_t step  = 0;        //текущий шаг
     unsigned long startTime  = 0;    //время начала
     unsigned long lastTime  = 0;     //время время последнего шага
-    uint32_t color = 0;         //скорость)
+    uint32_t color = 0;         
 };
 
 class AnimationManager {

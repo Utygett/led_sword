@@ -7,18 +7,28 @@
 #include "animations/wave/WaveUpAnimation.h"
 #include "hardware/Button.h"
 #include "hardware/TouchSensor.h"
+#include "SwordSettings.h"
 
 class Sword {
 private:
-    
+    SwordSettings m_settings;
+    //Менеджер анимаций
     AnimationManager m_manager;
-    Button menuBtn;
-    // Button incBtn(INCREMENT_BUTTON_PIN, true, 50);
-    // Button decBtn(DECREMENT_BUTTON_PIN, true, 50);
-    TouchSensor touch; // digital, active LOW
-
+    //Кнопка переключения меню
+    Button m_menuBtn;
+    //Кнопка увелечения параметра
+    Button m_incBtn;
+    //Кнопка уменьшения параметра
+    Button m_decBtn;
+    //Датчик касания
+    TouchSensor m_touch;
 public:
     Sword();
+    //Initaliaze
     void begin();
-    void update(); 
+    //update state
+    void update();
+    // update hardware
+    void updateHardware(unsigned long now);
+    void initSettings();
 };
