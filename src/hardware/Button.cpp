@@ -59,3 +59,8 @@ unsigned long Button::pressedDuration() const {
     if(!_stableState) return 0;
     return millis() - _pressStart;
 }
+
+void Button::release() {
+    _stableState = false;
+    _pressStart = 0;
+}

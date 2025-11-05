@@ -9,16 +9,13 @@
 #include "hardware/TouchSensor.h"
 #include "SwordSettings.h"
 
-enum SwordState {
-    CHECK_BATTERY,
-    PlAY_ANIMATION,
-    SETTINGS
-};
-
-
 class Sword {
 private:
+    //Текущая анимация
+    Animations m_currentAnimation;
+    //Текущее состояние
     SwordState m_currentState;
+    //Настройки программы
     SwordSettings m_settings;
     //Менеджер анимаций
     AnimationManager m_manager;
@@ -35,11 +32,13 @@ public:
     //Initaliaze
     void begin();
     //update state
-    void update(unsigned long now);
+    void update();
     // update hardware
     void updateHardware(unsigned long now);
     void initSettings();
     void checkBattery(unsigned long now);
     void playAnimation(unsigned long now);
     void settingsState(unsigned long now);
+    void changeState();
+    void changeAnimation();
 };

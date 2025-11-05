@@ -1,5 +1,6 @@
 #pragma once
-
+#include <Arduino.h>
+#include "colors.h"
 /*
  * Основные настройки программы
  */
@@ -21,3 +22,31 @@
 #define VIBRATION_SENSOR_PIN 2
 // Настройки батареи
 #define BATTERY_PIN A0
+
+// структура настроек анимации
+struct AnimationSettings {
+    uint8_t delay = 100;
+    uint32_t color = COLOR_RED;
+    float hue = 0.0f;
+    AnimationSettings() {}
+    AnimationSettings(uint8_t d, uint32_t c) : delay(d), color(c) {}
+};
+
+enum Animations {
+    NO_ANIMATION,
+    WAVE_UP,
+    WAVE_DOWN,
+    FULL_ROUND,
+    SAW_BLINK,
+    WAVE_STAR_DOWN,
+    ROUND_STAR,
+    POLICE_BLINK,
+    ANIMATIONS_SIZE
+};
+
+enum SwordState {
+    CHECK_BATTERY,
+    PlAY_ANIMATION,
+    SETTINGS,
+    STATE_SIZE
+};

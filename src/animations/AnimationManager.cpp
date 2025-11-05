@@ -6,6 +6,7 @@
 #include "round/RoundStar.h"
 #include "blink/SawBlink.h"
 #include "blink/Police.h"
+#include "../sword/SwordSettings.h"
 
 // добавляем простой конструктор (если уже есть, оставьте)
 AnimationManager::AnimationManager() {
@@ -29,17 +30,20 @@ void AnimationManager::begin() {
 // Простая реализация очистки кадра (черный)
 void AnimationManager::clearFrame() {
     for (int i = 0; i < MAIN_STRIP_COUNT; ++i) m_currentFrame.main_colors[i] = 0;
-    for (int i = 0; i < UPPER_STRIP_COUNT; ++i) m_currentFrame.upper_colors[i] = 0;
-    for (int i = 0; i < DOWN_STRIP_COUNT; ++i) m_currentFrame.down_colors[i] = 0;
+    // for (int i = 0; i < UPPER_STRIP_COUNT; ++i) m_currentFrame.upper_colors[i] = 0;
+    // for (int i = 0; i < DOWN_STRIP_COUNT; ++i) m_currentFrame.down_colors[i] = 0;
 }
 
-bool AnimationManager::addAnimation(Animations animation, int delay, uint32_t color) {
+bool AnimationManager::addAnimation(Animations animation) {
     //Ищем свободный слот и занимаем его
     for (auto& slot : m_animationStates) {
         if (slot.type == Animations::NO_ANIMATION) {
+            if (m_pSettings) {
+                AnimationSettings animSettings = m_pSettings->getAnimationSettings(animation);
+                slot.delay = animSettings.delay;
+                slot.color = animSettings.color;
+            }
             slot.type = animation;
-            slot.delay = delay;
-            slot.color = color;
             slot.startTime = millis();
             slot.lastTime = slot.startTime;
             return true;
@@ -125,13 +129,17 @@ void AnimationManager::queueState() {
 
 void AnimationManager::update() {
     unsigned long currentTime = millis();
+    bool anyActive = false;
     for(int i = 0; i < MAX_ANIMATIONS; ++i)
     {
         if (m_animationStates[i].type != Animations::NO_ANIMATION) {
             updateAnimation(m_animationStates[i], currentTime);
+            anyActive = true;
         }
     }
-    
+    if (!anyActive) {
+        clearFrame();
+    }
     m_swordStrip.SetColors(m_currentFrame);
     m_swordStrip.show();
     queueState();
@@ -151,5 +159,34 @@ void AnimationManager::blendFrames(const StripColors& newFrame) {
     for(int i = 0; i < DOWN_STRIP_COUNT; ++i) {
         if(newFrame.down_colors[i] != INT32_MAX)
             m_currentFrame.down_colors[i] = newFrame.down_colors[i];
+    }
+}
+
+void AnimationManager::showDownLeds(int count, uint32_t color) {
+    for(int i = 0; i < DOWN_STRIP_COUNT; ++i) {
+        m_currentFrame.down_colors[i] = 0;    
+    }
+    for(int i = 0; i < DOWN_STRIP_COUNT; ++i) {
+        if (i <= count)
+            m_currentFrame.down_colors[i] = color;    
+    }
+}
+
+void AnimationManager::showUpLeds(int count, uint32_t color) {
+    for(int i = 0; i < UPPER_STRIP_COUNT; ++i) {
+        m_currentFrame.upper_colors[i] = 0;    
+    }
+    for(int i = 0; i < UPPER_STRIP_COUNT; ++i) {
+        if (i <= count)
+            m_currentFrame.upper_colors[i] = color;    
+    }
+}
+
+void AnimationManager::clearStates() {
+    for (auto& slot : m_animationStates) {
+        slot.type = Animations::NO_ANIMATION;
+        slot.step = 0;
+        slot.lastTime = 0;
+        slot.startTime = 0;
     }
 }

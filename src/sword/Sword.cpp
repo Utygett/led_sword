@@ -47,7 +47,7 @@ void Sword::begin() {
 
   delay(100); // Даём питанию стабилизироваться
   m_manager.begin();
-
+  m_manager.setSettingsPointer(&m_settings);
   // Инициализация кнопок/датчика
   m_menuBtn.begin();
   m_incBtn.begin();
@@ -56,9 +56,8 @@ void Sword::begin() {
   m_settings.begin();
 
   m_currentState = CHECK_BATTERY;
+  m_currentAnimation = NO_ANIMATION;
 }
-
-int currentAnim = 0;
 
 void Sword::update() {
     unsigned long now = millis();
@@ -67,33 +66,21 @@ void Sword::update() {
     switch (m_currentState)
     {
     case CHECK_BATTERY:
-      /* code */
-      break;
+		checkBattery(now);
+		break;
     case PlAY_ANIMATION:
-    /* code */
-      break;
+		playAnimation(now);
+		break;
     case SETTINGS:
-    /* code */
-      break;
+		settingsState(now);
+		break;
     default:
-      break;
+		break;
     }
-
-    // триггерим анимацию только при касании (active LOW)
-    if (m_touch.justTouched()) {
-        m_manager.addAnimation(ROUND_STAR, 30, getColorByCounter(currentAnim));
-        currentAnim += 1;
-        if (currentAnim > 10) currentAnim = 0;
-    }
-
-    // одноразовые события меню
-    if (m_menuBtn.justPressed()) {
-      m_manager.addAnimation(ROUND_STAR, 30, getColorByCounter(currentAnim));
-    }
-    if (m_menuBtn.justReleased()) {
-        digitalWrite(LED_BUILTIN, LOW);
-    }
-
+	if (m_menuBtn.pressedDuration() > 1000) {
+		m_menuBtn.release();
+		changeState();
+	}
     m_manager.update();
 }
 
@@ -105,13 +92,64 @@ void Sword::updateHardware(unsigned long now) {
 }
 
 void Sword::checkBattery(unsigned long now) {
-
+	if (m_touch.justTouched()) {
+        m_manager.addAnimation(WAVE_STAR_DOWN);
+    }
 }
 
 void Sword::playAnimation(unsigned long now) {
-
+    if (m_touch.justTouched()) {
+        m_manager.addAnimation(m_currentAnimation);
+    }
+	if (m_menuBtn.justPressed()) {
+		changeAnimation();
+		m_manager.addAnimation(m_currentAnimation);
+    }
+	if (m_incBtn.justPressed()) {
+		m_settings.changeMainBrightness(10);
+	}
+	if (m_decBtn.justPressed()) {
+		m_settings.changeMainBrightness(-10);
+	}
 }
 
 void Sword::settingsState(unsigned long now) {
-	
+	if (m_touch.justTouched()) {
+        m_manager.addAnimation(m_settings.getCurrentAnimation());
+    }
+	if (m_menuBtn.justPressed()) {
+		m_manager.clearStates();
+		m_manager.clearFrame();
+		m_settings.nextAnimation();
+		m_manager.addAnimation(m_settings.getCurrentAnimation());
+	}
+	if (m_incBtn.justPressed()) {
+		m_manager.clearStates();
+		m_manager.clearFrame();
+		m_settings.nextDelay();
+		m_manager.addAnimation(m_settings.getCurrentAnimation());
+	}
+	if (m_decBtn.justPressed()) {
+		m_manager.clearStates();
+		m_manager.clearFrame();
+		m_settings.nextColor();
+		m_manager.addAnimation(m_settings.getCurrentAnimation());
+	}
+}
+
+void Sword::changeState() {
+	if (m_currentState == SETTINGS) {
+		m_settings.saveToEEPROM();
+	}
+	m_currentState = static_cast<SwordState>(static_cast<int>(m_currentState) + 1);
+	if (static_cast<int>(m_currentState) >= STATE_SIZE)
+		m_currentState = CHECK_BATTERY;
+	m_manager.showUpLeds(static_cast<int>(m_currentState), COLOR_GREEN);
+}
+
+void Sword::changeAnimation() {
+	m_currentAnimation = static_cast<Animations>(static_cast<int>(m_currentAnimation) + 1);
+	if (static_cast<int>(m_currentAnimation) >= ANIMATIONS_SIZE)
+		m_currentAnimation = NO_ANIMATION;
+	m_manager.showDownLeds(static_cast<int>(m_currentAnimation), COLOR_ORANGE);
 }

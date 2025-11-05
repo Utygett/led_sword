@@ -12,7 +12,7 @@ public:
     bool justPressed();    // одноразовый флаг — сбрасывается при вызове
     bool justReleased();   // одноразовый флаг — сбрасывается при вызове
     unsigned long pressedDuration() const; // время удержания, 0 если не удерживается
-
+    void release();
 private:
     uint8_t _pin;
     bool _usePullup;
