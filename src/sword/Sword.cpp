@@ -53,6 +53,9 @@ void Sword::begin() {
   m_incBtn.begin();
   m_decBtn.begin();
   m_touch.begin();
+  m_settings.begin();
+
+  m_currentState = CHECK_BATTERY;
 }
 
 int currentAnim = 0;
@@ -60,6 +63,21 @@ int currentAnim = 0;
 void Sword::update() {
     unsigned long now = millis();
     updateHardware(now);
+
+    switch (m_currentState)
+    {
+    case CHECK_BATTERY:
+      /* code */
+      break;
+    case PlAY_ANIMATION:
+    /* code */
+      break;
+    case SETTINGS:
+    /* code */
+      break;
+    default:
+      break;
+    }
 
     // триггерим анимацию только при касании (active LOW)
     if (m_touch.justTouched()) {
@@ -84,4 +102,16 @@ void Sword::updateHardware(unsigned long now) {
   m_touch.update(now);
   m_incBtn.update(now);
   m_decBtn.update(now);
+}
+
+void Sword::checkBattery(unsigned long now) {
+
+}
+
+void Sword::playAnimation(unsigned long now) {
+
+}
+
+void Sword::settingsState(unsigned long now) {
+	
 }
